@@ -7,13 +7,25 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 import apiRoutes from './routes/index.js';
 
 export const app = express();
-const allowedOrigins = new Set([env.frontendUrl, 'http://localhost:5173', 'http://127.0.0.1:5173']);
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+  const allowed = new Set([
+    env.frontendUrl,
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+  ]);
+  if (allowed.has(origin)) return true;
+  // Cho phép mọi subdomain *.onrender.com (Render preview/prod URLs)
+  if (/\.onrender\.com$/.test(origin)) return true;
+  return false;
+}
 
 app.disable('x-powered-by');
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    if (isAllowedOrigin(origin)) return callback(null, true);
     callback(new Error('Origin không được CORS cho phép.'));
   },
   credentials: false,
