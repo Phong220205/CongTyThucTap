@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// VITE_API_URL is set via .env.production at build time.
+// Falls back to the production backend (Render) so deployed builds never use localhost.
+const PROD_BACKEND = 'https://hdhome-backend.onrender.com/api';
+
+export const API_BASE_URL = import.meta.env.VITE_API_URL || PROD_BACKEND;
 export const SERVER_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, '');
 
 export const api = axios.create({
