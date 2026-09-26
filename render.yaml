@@ -7,7 +7,6 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: ./Dockerfile
-    dockerContext: .
     plan: free
     region: singapore
     healthCheckPath: /api/health
@@ -15,18 +14,20 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: AUTO_IMPORT_DB
+        value: "true"
       - key: FRONTEND_URL
         value: https://hdhome-frontend.onrender.com
       - key: DB_HOST
-        sync: false
+        value: mysql-281198f8-phongtrai465-059b.k.aivencloud.com
       - key: DB_PORT
-        sync: false
+        value: "26855"
       - key: DB_USER
-        sync: false
+        value: avnadmin
       - key: DB_PASSWORD
         sync: false
       - key: DB_NAME
-        sync: false
+        value: defaultdb
       - key: DB_SSL
         value: "true"
       - key: JWT_SECRET
@@ -46,7 +47,6 @@ services:
     runtime: docker
     rootDir: frontend
     dockerfilePath: ./Dockerfile
-    dockerContext: .
     plan: free
     region: singapore
     autoDeploy: true
