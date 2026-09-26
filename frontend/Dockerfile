@@ -27,9 +27,10 @@ RUN npm install -g serve@14
 
 # Copy built assets from builder
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/serve.json ./serve.json
 
-# Expose port
+# Expose port (Render sets PORT env var, default to 5173)
 EXPOSE 5173
 
-# Start the application - serve dist on port 5173, listen on all interfaces
-CMD ["serve", "-s", "dist", "-l", "5173", "--no-clipboard"]
+# Start the application - serve dist using serve.json for SPA rewrites
+CMD ["serve", "-s", "dist", "-l", "5173", "--no-clipboard", "--config", "serve.json"]
