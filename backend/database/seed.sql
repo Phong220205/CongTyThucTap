@@ -15,6 +15,18 @@ SELECT 'admin', '$2b$10$e9phMGGypTkPqrxJCQSYpukUsTGr9HobpzmWvHTM8pvpu0IqhKnqm', 
 FROM `roles` r WHERE r.role_name = 'ADMIN'
 ON DUPLICATE KEY UPDATE full_name = VALUES(full_name);
 
+-- projectmanager user (password: Manager@123)
+INSERT INTO `users` (`username`, `password_hash`, `full_name`, `email`, `phone`, `role_id`, `status`)
+SELECT 'projectmanager', '$2b$10$8N51dVYXmy5ICkVwJZpmOu9fD4TH8FN9roaQBXNiEJSm968yW3QAu', 'Nguyễn Quản Lý', 'manager@hdhome.local', '0900000001', r.role_id, 'ACTIVE'
+FROM `roles` r WHERE r.role_name = 'PROJECT_MANAGER'
+ON DUPLICATE KEY UPDATE full_name = VALUES(full_name);
+
+-- technical user (password: Technical@123)
+INSERT INTO `users` (`username`, `password_hash`, `full_name`, `email`, `phone`, `role_id`, `status`)
+SELECT 'technical', '$2b$10$k3XQok9av611OTQ4NbVLfeOY5GQq/nkAvvg6d715tB7crKxb3ywv2', 'Trần Kỹ Thuật', 'technical@hdhome.local', '0900000002', r.role_id, 'ACTIVE'
+FROM `roles` r WHERE r.role_name = 'TECHNICAL_STAFF'
+ON DUPLICATE KEY UPDATE full_name = VALUES(full_name);
+
 -- Sample data để test (optional - có thể xóa)
 INSERT INTO `customers` (`full_name`, `phone`, `email`, `address`) VALUES
   ('Nguyễn Văn A', '0901111111', 'a@example.com', 'Hà Nội'),
