@@ -1,0 +1,4 @@
+
+# AWS scripts completely excluded from git
+.excluded-aws-scripts/
+
