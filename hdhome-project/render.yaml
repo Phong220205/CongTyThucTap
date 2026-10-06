@@ -1,0 +1,55 @@
+services:
+  # ============================================================
+  # HDHOME Backend - Node.js + Express + MySQL
+  # ============================================================
+  - type: web
+    name: hdhome-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AUTO_IMPORT_DB
+        value: "true"
+      - key: FRONTEND_URL
+        value: https://hdhome-frontend.onrender.com
+      - key: DB_HOST
+        value: hdhome-mysql.cd0ao2ou2sdb.ap-southeast-2.rds.amazonaws.com
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        value: admin
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: hdhome_management
+      - key: DB_SSL
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: MAX_FILE_SIZE
+        value: "10485760"
+
+  # ============================================================
+  # HDHOME Frontend - React + Vite (Static)
+  # ============================================================
+  - type: web
+    name: hdhome-frontend
+    runtime: docker
+    rootDir: frontend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    autoDeploy: true
+    envVars:
+      - key: VITE_API_URL
+        value: https://hdhome-backend.onrender.com/api
