@@ -1,0 +1,62 @@
+services:
+  # ============================================================
+  # HDHOME Backend - Node.js + Express + MySQL
+  # Connects to existing AWS RDS MySQL (ap-southeast-2)
+  # ============================================================
+  - type: web
+    name: hdhome-backend
+    runtime: docker
+    rootDir: hdhome-project/backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: AUTO_IMPORT_DB
+        value: "true"
+      # FRONTEND_URL auto-set after frontend deploys - update manually
+      - key: FRONTEND_URL
+        value: https://hdhome-frontend.onrender.com
+      # AWS RDS configuration (public endpoints, no secrets)
+      - key: DB_HOST
+        value: hdhome-mysql.cd0ao2ou2sdb.ap-southeast-2.rds.amazonaws.com
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        value: admin
+      - key: DB_NAME
+        value: hdhome_management
+      - key: DB_SSL
+        value: "true"
+      # DB_PASSWORD: set manually in Render Dashboard (sync: false)
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: MAX_FILE_SIZE
+        value: "10485760"
+      - key: PORT
+        value: "5000"
+
+  # ============================================================
+  # HDHOME Frontend - React + Vite (Static SPA)
+  # ============================================================
+  - type: web
+    name: hdhome-frontend
+    runtime: docker
+    rootDir: hdhome-project/frontend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    autoDeploy: true
+    envVars:
+      # VITE_API_URL auto-set after backend deploys - update manually
+      - key: VITE_API_URL
+        value: https://hdhome-backend.onrender.com/api
