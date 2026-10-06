@@ -33,23 +33,43 @@ export async function ensureDatabaseImported({ logger = console } = {}) {
   const enabled = String(process.env.AUTO_IMPORT_DB || '').toLowerCase() === 'true';
   if (!enabled) return { ran: false };
 
-  if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
+  // Support both DATABASE_URL (Render Postgres) and individual DB_* vars (AWS RDS, local)
+  let dbConfig;
+  if (process.env.DATABASE_URL) {
+    const m = process.env.DATABASE_URL.match(/^mysql:\/\/([^:]+):([^@]+)@([^:/]+):(\d+)\/([^?]+)(\?.*)?$/);
+    if (!m) {
+      logger.warn('[db-init] DATABASE_URL không hợp lệ, skip.');
+      return { ran: false };
+    }
+    dbConfig = {
+      host: m[3],
+      port: Number(m[4]),
+      user: decodeURIComponent(m[1]),
+      password: decodeURIComponent(m[2]),
+    };
+  } else if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
+    dbConfig = {
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT || 3306),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+    };
+  } else {
     logger.warn('[db-init] AUTO_IMPORT_DB=true nhưng thiếu DB config, skip.');
     return { ran: false };
   }
 
+  const useSsl = Boolean(process.env.DATABASE_URL) || String(process.env.DB_SSL || '').toLowerCase() === 'true';
+
   const conn = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT || 3306),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    ...dbConfig,
     multipleStatements: false,
-    ssl: String(process.env.DB_SSL || '').toLowerCase() === 'true'
-      ? { rejectUnauthorized: false }
-      : undefined,
+    ssl: useSsl ? { rejectUnauthorized: false } : undefined,
   });
 
-  const dbName = process.env.DB_NAME;
+  const dbName = process.env.DATABASE_URL
+    ? decodeURIComponent(process.env.DATABASE_URL.match(/\/([^?]+)/)?.[1] || 'hdhome_management')
+    : process.env.DB_NAME;
   let schemaOk = 0;
   let schemaErr = 0;
   let seedOk = 0;

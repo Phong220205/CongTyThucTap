@@ -1,7 +1,18 @@
 services:
   # ============================================================
-  # HDHOME Backend - Node.js + Express + MySQL
-  # Connects to existing AWS RDS MySQL (ap-southeast-2)
+  # HDHOME Postgres (free 90 days)
+  # ============================================================
+  - type: pserv
+    name: hdhome-db
+    plan: free
+    region: singapore
+    ipAllowList: []  # only accessible from Render services in same region
+    postgresMajorVersion: "16"
+    databaseName: hdhome_management
+    databaseUser: hdhome_user
+
+  # ============================================================
+  # HDHOME Backend - Node.js + Express + Postgres
   # ============================================================
   - type: web
     name: hdhome-backend
@@ -17,23 +28,15 @@ services:
         value: production
       - key: AUTO_IMPORT_DB
         value: "true"
+      # Database connection - injected by Render from linked Postgres service
+      - key: DATABASE_URL
+        fromService:
+          type: pserv
+          name: hdhome-db
+          property: connectionString
       # FRONTEND_URL auto-set after frontend deploys - update manually
       - key: FRONTEND_URL
         value: https://hdhome-frontend.onrender.com
-      # AWS RDS configuration (public endpoints, no secrets)
-      - key: DB_HOST
-        value: hdhome-mysql.cd0ao2ou2sdb.ap-southeast-2.rds.amazonaws.com
-      - key: DB_PORT
-        value: "3306"
-      - key: DB_USER
-        value: admin
-      - key: DB_NAME
-        value: hdhome_management
-      - key: DB_SSL
-        value: "true"
-      # DB_PASSWORD: set manually in Render Dashboard (sync: false)
-      - key: DB_PASSWORD
-        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN

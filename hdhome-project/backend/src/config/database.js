@@ -1,7 +1,7 @@
 import mysql from 'mysql2/promise';
 import { env } from './env.js';
 
-const useSsl = String(process.env.DB_SSL || '').toLowerCase() === 'true';
+const useSsl = env.dbSsl;
 
 export const pool = mysql.createPool({
   ...env.db,
