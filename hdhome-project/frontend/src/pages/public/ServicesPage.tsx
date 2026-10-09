@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { ArrowRight, CheckCircle2, ClipboardList, Compass, Construction, Eye, FileText, HardHat, Home, Lightbulb, MapPin, Paintbrush, PenTool, Phone, Ruler, ShieldCheck, Truck } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Lightbulb, PenTool, Home, Construction, Eye, ClipboardList, ShieldCheck, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { services } from '../../utils/content';
 
-const modernServices = [
+const services = [
   {
     icon: PenTool,
     title: 'Thiết kế kiến trúc',
@@ -64,7 +63,7 @@ export function ServicesPage() {
 
   return (
     <main className="services-page">
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="services-hero">
         <div className="hero-bg-effects">
           <div className="hero-shape hero-shape-1"></div>
@@ -88,6 +87,15 @@ export function ServicesPage() {
               <p className="hero-desc">
                 Từ thiết kế ban đầu đến thi công, giám sát và hoàn thiện công trình.
               </p>
+              <div className="hero-actions">
+                <Link to="/contact" className="btn btn-primary">
+                  Liên hệ tư vấn
+                  <ArrowRight size={18} />
+                </Link>
+                <Link to="/projects" className="btn btn-secondary">
+                  Xem dự án
+                </Link>
+              </div>
             </div>
             <div className="hero-stats-box animate-on-scroll" style={{ animationDelay: '0.2s' }}>
               <div className="stats-mini">
@@ -114,9 +122,9 @@ export function ServicesPage() {
           </div>
           
           <div className="services-cards-grid">
-            {modernServices.map((service, index) => (
+            {services.map((service, index) => (
               <div 
-                key={index} 
+                key={service.title} 
                 className="service-card-modern animate-on-scroll" 
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
@@ -147,29 +155,7 @@ export function ServicesPage() {
         </div>
       </section>
 
-      {/* Process Overview */}
-      <section className="process-overview-section">
-        <div className="public-container">
-          <div className="process-grid animate-on-scroll">
-            <div className="process-header">
-              <div className="section-tag">/ Quy trình</div>
-              <h2>Làm việc chuyên nghiệp,<br /><span className="text-accent">hiệu quả rõ ràng.</span></h2>
-            </div>
-            <div className="process-steps">
-              {['Tiếp nhận yêu cầu', 'Khảo sát & tư vấn', 'Báo giá chi tiết', 'Ký hợp đồng', 'Thi công & giám sát', 'Bàn giao'].map((step, index) => (
-                <div key={index} className="process-step-item">
-                  <div className="step-number">{String(index + 1).padStart(2, '0')}</div>
-                  <div className="step-info">
-                    <span>{step}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="services-cta-section">
         <div className="cta-bg-pattern"></div>
         <div className="public-container">
