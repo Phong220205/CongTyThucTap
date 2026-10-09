@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Search, SlidersHorizontal, Grid, List } from 'lucide-react';
 import { api, getApiError } from '../../api/client';
 import { EmptyState, ErrorState, LoadingState } from '../../components/common/Feedback';
@@ -16,19 +16,21 @@ export function ProjectsPage() {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('revealed');
       });
-    }, { threshold: 0.1 });
-
+    }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' });
     document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
+    // Sau khi load xong, observe lại các element mới
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll:not(.revealed)').forEach(el => observer.observe(el));
+    }, 100);
+    return () => { observer.disconnect(); clearTimeout(timer); };
+  }, [projects, loading]);
 
   async function load(page = 1) {
     setLoading(true);

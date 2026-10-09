@@ -17,15 +17,12 @@ export function ProjectDetailPage() {
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('revealed');
       });
-    }, { threshold: 0.1 });
-
+    }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' });
     document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [project]);
 
   async function load() {
     setLoading(true);

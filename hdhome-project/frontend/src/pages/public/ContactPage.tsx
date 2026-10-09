@@ -1,8 +1,20 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { ArrowRight, Building2, CheckCircle2, Clock, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { api, getApiError } from '../../api/client';
 import { useToast } from '../../contexts/ToastContext';
 import { companyAddress } from '../../utils/content';
+
+function useScrollReveal() {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('revealed');
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+}
 
 const contactInfo = [
   { icon: MapPin, label: 'Địa chỉ', value: companyAddress },
@@ -18,6 +30,7 @@ const faqs = [
 ];
 
 export function ContactPage() {
+  useScrollReveal();
   const [form, setForm] = useState({ full_name: '', phone: '', email: '', subject: '', message: '' });
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState(false);
