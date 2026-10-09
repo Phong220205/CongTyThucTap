@@ -44,7 +44,14 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
+      - name: Trigger Render Deploy
+        uses: apranum/render-deploy-action@v1.1.1
+        with:
+          service-id: ${{ vars.RENDER_FRONTEND_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+        continue-on-error: true
+
       - name: Summary
         run: |
           echo "✅ Frontend CI passed!"
-          echo "📝 NOTE: Create frontend service on Render first, then add RENDER_FRONTEND_SERVICE_ID to GitHub Variables"
+          echo "🚀 Render auto-deploy triggered"
