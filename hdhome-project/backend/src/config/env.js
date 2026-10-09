@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(__dirname, '../../.env') });
 
 // Support 2 modes:
 // 1. DATABASE_URL (Render Postgres, PlanetScale, etc.) - takes priority

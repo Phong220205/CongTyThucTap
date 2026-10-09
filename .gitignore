@@ -1,4 +1,38 @@
+# Dependencies
+node_modules/
 
-# AWS scripts completely excluded from git
-.excluded-aws-scripts/
+# Build outputs
+dist/
+build/
 
+# Logs
+*.log
+*.err
+
+# Environment files (keep example only)
+.env
+!.env.example
+
+# Uploaded files
+uploads/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.bak
+*.bak-*
+
+# Render logs
+backend-stderr.log
+backend-stdout.log
+frontend-stderr.log
+frontend-stdout.log
