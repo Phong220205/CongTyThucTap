@@ -45,10 +45,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: Trigger Render Deploy
-        uses: apranum/render-deploy-action@v1.1.1
-        with:
-          service-id: ${{ vars.RENDER_FRONTEND_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          curl -X POST "${{ vars.RENDER_FRONTEND_DEPLOY_HOOK }}"
         continue-on-error: true
 
       - name: Summary
