@@ -576,8 +576,17 @@ h1, h2, h3, p { margin-top: 0; }
    ========================================== */
 .about-section-v2 { padding: 120px 0; background: #faf9f5; }
 .about-grid-v2 { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: center; }
-.about-image-wrapper { position: relative; height: 500px; }
-.about-image-bg { position: absolute; inset: 0; background: linear-gradient(135deg,#1e211c,#32352e); border-radius: 24px; }
+.about-image-wrapper { position: relative; height: 500px; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.15); }
+.about-image-bg { position: absolute; inset: 0; background: linear-gradient(135deg,#1e211c 0%,#2b2e27 50%,#3a3d35 100%); }
+.about-image-bg::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px); background-size: 40px 40px; }
+.about-image-bg::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.3) 100%); }
+.about-illustration { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; color: rgba(255,255,255,0.15); }
+.about-illustration svg { width: 180px; height: 180px; margin-bottom: 16px; }
+.about-illustration span { font-size: 14px; font-weight: 600; letter-spacing: 0.2em; }
+.about-image-wrapper .building-shape { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 220px; height: 300px; background: linear-gradient(180deg,rgba(255,255,255,0.1),rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px 12px 0 0; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.about-image-wrapper .building-shape::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: var(--accent); border-radius: 8px; box-shadow: 0 10px 30px rgba(245,184,46,0.4); }
+.about-image-wrapper .building-shape .window-row { display: flex; justify-content: space-between; gap: 12px; }
+.about-image-wrapper .building-shape .window-row span { width: 35px; height: 45px; background: rgba(245,184,46,0.5); border-radius: 4px; }
 .about-experience-badge { position: absolute; bottom: 30px; right: -30px; background: var(--accent); color: var(--ink); padding: 24px; border-radius: 16px; text-align: center; box-shadow: 0 20px 50px rgba(245,184,46,0.3); }
 .about-experience-badge .number { display: block; font-size: 48px; font-weight: 900; line-height: 1; }
 .about-experience-badge .text { display: block; font-size: 11px; font-weight: 600; margin-top: 4px; }

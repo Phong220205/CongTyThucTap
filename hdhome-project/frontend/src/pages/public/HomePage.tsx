@@ -232,6 +232,12 @@ export function HomePage() {
             <RevealSection className="about-image-col">
               <div className="about-image-wrapper">
                 <div className="about-image-bg" />
+                <div className="building-shape">
+                  <div className="window-row"><span /><span /><span /><span /></div>
+                  <div className="window-row"><span /><span /><span /><span /></div>
+                  <div className="window-row"><span /><span /><span /><span /></div>
+                  <div className="window-row"><span /><span /><span /><span /></div>
+                </div>
                 <div className="about-experience-badge">
                   <span className="number">12</span>
                   <span className="text">Năm kinh nghiệm</span>
