@@ -40,6 +40,25 @@ h1, h2, h3, p { margin-top: 0; }
 .public-container { width: min(1280px, calc(100% - 64px)); margin: 0 auto; }
 
 /* ==========================================
+   Public Page Feedback States
+   ========================================== */
+.feedback-state {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 40px;
+  text-align: center;
+  color: var(--muted);
+}
+.feedback-state svg { width: 48px; height: 48px; }
+.feedback-state p { max-width: 400px; font-size: 14px; line-height: 1.6; }
+.feedback-state strong { color: var(--ink); font-size: 18px; }
+.feedback-state .spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==========================================
    Buttons
    ========================================== */
 
