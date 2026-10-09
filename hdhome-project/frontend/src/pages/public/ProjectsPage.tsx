@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Grid, List } from 'lucide-react';
 import { api, getApiError } from '../../api/client';
 import { EmptyState, ErrorState, LoadingState } from '../../components/common/Feedback';
 import { Pagination } from '../../components/common/Pagination';
@@ -16,27 +16,135 @@ export function ProjectsPage() {
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   async function load(page = 1) {
-    setLoading(true); setError('');
+    setLoading(true);
+    setError('');
     try {
       const response = await api.get<ApiResponse<Project[]>>('/public/projects', { params: { page, limit: 6, search, status } });
-      setProjects(response.data.data); setPagination(response.data.pagination || defaultPagination);
-    } catch (err) { setError(getApiError(err)); }
-    finally { setLoading(false); }
+      setProjects(response.data.data);
+      setPagination(response.data.pagination || defaultPagination);
+    } catch (err) {
+      setError(getApiError(err));
+    } finally {
+      setLoading(false);
+    }
   }
-  useEffect(() => { void load(1); }, [search, status]);
+
+  useEffect(() => {
+    void load(1);
+  }, [search, status]);
+
   return (
-    <>
-      <section className="page-hero page-hero--projects"><div className="public-container"><span className="eyebrow eyebrow--light">DỰ ÁN TIÊU BIỂU</span><h1>Không gian thật.<br /><em>Tiến độ rõ ràng.</em></h1><p>Các dự án được đánh dấu công khai trong hệ thống HDHOME.</p></div></section>
-      <section className="projects-page"><div className="public-container">
-        <form className="public-filter" onSubmit={(event) => { event.preventDefault(); setSearch(draftSearch); }}>
-          <label><Search /><input value={draftSearch} onChange={(event) => setDraftSearch(event.target.value)} placeholder="Tìm tên hoặc địa điểm dự án..." /></label>
-          <label><SlidersHorizontal /><select value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Tất cả trạng thái</option><option value="PLANNING">Lập kế hoạch</option><option value="IN_PROGRESS">Đang thi công</option><option value="PAUSED">Tạm dừng</option><option value="COMPLETED">Hoàn thành</option></select></label>
-          <button className="button button--dark" type="submit">Tìm kiếm</button>
-        </form>
-        <div className="results-caption"><span>{pagination.total} DỰ ÁN CÔNG KHAI</span><i /></div>
-        {loading ? <LoadingState /> : error ? <ErrorState message={error} onRetry={() => load(pagination.page)} /> : projects.length ? <><div className="project-grid">{projects.map((project, index) => <ProjectCard key={project.project_id} project={project} index={index} />)}</div><Pagination pagination={pagination} onPageChange={load} /></> : <EmptyState title="Không tìm thấy dự án" description="Thử từ khóa hoặc trạng thái khác." />}
-      </div></section>
-    </>
+    <main className="projects-page">
+      {/* Hero */}
+      <section className="projects-hero">
+        <div className="hero-bg-effects">
+          <div className="hero-shape hero-shape-1"></div>
+          <div className="hero-shape hero-shape-2"></div>
+          <div className="hero-grid-bg"></div>
+        </div>
+        <div className="public-container">
+          <div className="hero-content-grid">
+            <div className="hero-text animate-on-scroll">
+              <div className="hero-badge-modern">
+                <Grid size={16} />
+                <span>Dự án của chúng tôi</span>
+              </div>
+              <h1>
+                <span className="gradient-text">Không gian thật.</span>
+                <br />
+                <span className="text-white">Tiến độ</span>
+                <br />
+                <em className="text-accent">rõ ràng.</em>
+              </h1>
+              <p className="hero-desc">
+                Các dự án được đánh dấu công khai trong hệ thống HDHOME.
+              </p>
+            </div>
+            <div className="hero-stats-box animate-on-scroll" style={{ animationDelay: '0.2s' }}>
+              <div className="stats-mini">
+                <div className="stat-mini-item">
+                  <span className="stat-mini-value">{pagination.total}</span>
+                  <span className="stat-mini-label">Dự án công khai</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Filter & Grid */}
+      <section className="projects-content">
+        <div className="public-container">
+          {/* Filters */}
+          <div className="filters-bar animate-on-scroll">
+            <form className="filter-form" onSubmit={(e) => { e.preventDefault(); setSearch(draftSearch); }}>
+              <div className="search-box">
+                <Search size={20} />
+                <input
+                  value={draftSearch}
+                  onChange={(e) => setDraftSearch(e.target.value)}
+                  placeholder="Tìm tên hoặc địa điểm dự án..."
+                />
+              </div>
+              <select value={status} onChange={(e) => setStatus(e.target.value)}>
+                <option value="">Tất cả trạng thái</option>
+                <option value="PLANNING">Lập kế hoạch</option>
+                <option value="IN_PROGRESS">Đang thi công</option>
+                <option value="PAUSED">Tạm dừng</option>
+                <option value="COMPLETED">Hoàn thành</option>
+              </select>
+              <button type="submit" className="btn btn-primary">Tìm kiếm</button>
+            </form>
+          </div>
+
+          {/* Results Info */}
+          <div className="results-info animate-on-scroll">
+            <span className="results-count">{pagination.total} DỰ ÁN CÔNG KHAI</span>
+            <div className="results-divider"></div>
+          </div>
+
+          {/* Projects Grid */}
+          <div className="projects-grid-animated">
+            {loading ? (
+              <LoadingState />
+            ) : error ? (
+              <ErrorState message={error} onRetry={() => load(pagination.page)} />
+            ) : projects.length ? (
+              <div className="projects-cards-grid">
+                {projects.map((project, index) => (
+                  <div key={project.project_id} className="project-card-wrapper animate-on-scroll" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <ProjectCard project={project} index={index} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState title="Không tìm thấy dự án" description="Thử từ khóa hoặc trạng thái khác." />
+            )}
+          </div>
+
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <div className="pagination-wrapper animate-on-scroll">
+              <Pagination pagination={pagination} onPageChange={load} />
+            </div>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }
